@@ -16,10 +16,10 @@ const userSchema = new Schema({
   },
   tasks: [
     {
-        type: Schema.Types.ObjectId,
-        ref:"Task"
-    }
-  ]
+      type: Schema.Types.ObjectId,
+      ref: "Task",
+    },
+  ],
 });
 
-module.export = mongoose.model("User", userSchema);
+module.exports = mongoose.model("User", userSchema);

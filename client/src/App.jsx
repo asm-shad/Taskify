@@ -1,10 +1,14 @@
 import React from "react";
+import { Route, Routes } from "react-router-dom";
+import Register from "./pages/Register";
 
 const App = () => {
   return (
-    <div className="bg-orange-600">
-      <h2 className="text-9xl">ASM</h2>
-    </div>
+    <>
+      <Routes>
+        <Route path="/register" element={<Register></Register>}></Route>
+      </Routes>
+    </>
   );
 };
 

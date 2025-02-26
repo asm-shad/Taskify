@@ -7,7 +7,12 @@ require("./connection/conn");
 const userApis = require("./controllers/user");
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5175", "http://localhost:5173"],
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
@@ -18,5 +23,5 @@ app.get("/", (req, res) => {
 app.use("/api/v1", userApis);
 
 app.listen(`${process.env.PORT}`, () => {
-  console.log("Server Started AT PORT = ${process.env.PORT}");
+  console.log(`Server Started AT PORT = ${process.env.PORT}`);
 });

@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
   try {
@@ -43,7 +44,38 @@ const register = async (req, res) => {
 
     return res.status(201).json({ success: "Registration successful" });
   } catch (error) {
-    console.error("Error in registration:", error);
+    return res.status(500).json({ error: "Internal server error!" });
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: "All fields are required!" });
+    }
+    const checkUser = await User.findOne({ email });
+    if (checkUser) {
+      bcrypt.compare(password, checkUser.password, (err, data) => {
+        if (data) {
+          const token = jwt.sign(
+            { id: checkUser._id, email: checkUser.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "365d" }
+          );
+          res.cookie("taskifyUserToken", token, {
+            httpOnly: true,
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "None",
+          });
+          return res.status(200).json({ success: "Login Successfull" });
+        } else {
+          return res.status(400).json({ error: "Invalid Credentials" });
+        }
+      });
+    }
+  } catch (error) {
     return res.status(500).json({ error: "Internal server error!" });
   }
 };
